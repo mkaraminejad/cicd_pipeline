@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    run: webapp
+  name: webapp
+spec:
+  containers:
+  - image: registry.gitlab.com/d6245/k8s-cluster/sample:v1
+    name: webapp
+  restartPolicy: Always
+  imagePullSecrets:
+     - name: docsec 
