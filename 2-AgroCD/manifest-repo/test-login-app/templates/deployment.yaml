@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: logindep
+  name: {{ .Release.Name }}-logindep
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: logindep
+  template:
+    metadata:
+      labels:
+        app: logindep
+    spec:
+      containers:
+      - image: {{ .Values.image.repository }} 
+        name: sample
+      imagePullSecrets:
+      - name: helm-secret 

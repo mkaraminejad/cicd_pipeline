@@ -1,0 +1,48 @@
+stages:
+  - build
+  - update_helm_chart
+
+variables:
+  APP_NAME: login_demo
+  IMAGE_TAG: registry.gitlab.com/d6245/code-repo/$APP_NAME:$CI_COMMIT_SHORT_SHA
+
+build_image:
+  image: docker
+  stage: build
+  services:
+    - docker:dind
+  script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - docker build -t $IMAGE_TAG .
+    - docker push $IMAGE_TAG 
+
+update_helm_chart:
+    stage: update_helm_chart
+    image: ubuntu:22.04
+    before_script:
+      - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client git -y )'
+      - mkdir -p /root/.ssh
+      - echo "$SSH_PRIVATE_KEY" > /root/.ssh/id_rsa
+      - chmod 600 /root/.ssh/id_rsa
+      - ssh-keyscan -H gitlab.com >> ~/.ssh/known_hosts
+      - chmod 644 ~/.ssh/known_hosts
+        # run ssh-agent
+      - eval $(ssh-agent -s)
+        # add ssh key stored in SSH_PRIVATE_KEY variable to the agent store
+      - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -  
+      # Git
+      - git config --global user.email "gitlab-ci@gmail.com"
+      - git config --global user.name "gitlab-ci"
+      - git clone git@gitlab.com:d6245/manifest-repo.git
+      - cd manifest-repo
+      - ls -latr
+    script:
+    # Update Image TAG
+     - sed -i "s/login_demo:.*/login_demo:${CI_COMMIT_SHORT_SHA}/g" test-login-app/values.yaml
+     - git add test-login-app/values.yaml
+     - git commit -am "Update Image"
+     - git push
+
+
+
+
