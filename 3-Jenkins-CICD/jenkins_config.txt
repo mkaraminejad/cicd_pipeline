@@ -1,0 +1,41 @@
+pipeline {
+    agent any
+    environment { 
+       VERSION = "${env.BUILD_ID}" 
+       NAME = "registry.gitlab.com/d6245/jesnkins-prj/login"
+    }
+
+    stages {
+        stage('Pull from Jenkins-Prj Repo') {
+            steps {
+                git branch: 'main', credentialsId: 'Gitlab_Auth', url: 'https://gitlab.com/d6245/jesnkins-prj.git'
+            }
+        }
+        stage('Login & Build') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'Gitlab_Auth', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+                sh "docker login registry.gitlab.com -u $USERNAME -p $PASSWORD "
+                sh "docker build -t ${NAME}:${VERSION} ."
+                sh "docker push  ${NAME}:${VERSION}"
+
+                }
+            }
+        }   
+        stage('Update Tag') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'Gitlab_Auth', usernameVariable: 'GIT_USERNAME', passwordVariable: 'GIT_PASSWORD')]) {
+                git branch: 'main', credentialsId: 'Gitlab_Auth', url: 'https://gitlab.com/d6245/manifest-repo.git'
+                echo 'Updating Image TAG'
+                sh 'sed -i "s/login:.*/login:${VERSION}/g" test-login-app/values.yaml'
+                echo 'Git Config'
+                sh 'git config --global user.email "Jenkins@company.com"'
+                sh 'git config --global user.name "Jenkins-ci"'
+                sh 'git add test-login-app/values.yaml'
+                sh 'git commit -am "Update Image tag"'
+                sh 'git push https://${GIT_USERNAME}:${GIT_PASSWORD}@gitlab.com/d6245/manifest-repo.git '
+                }
+            }
+        }          
+    }
+}
+
