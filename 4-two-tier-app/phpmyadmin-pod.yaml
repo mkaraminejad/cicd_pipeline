@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    run: phpadmin-pod
+  name: phpadmin-pod
+spec:
+  containers:
+  - image: phpmyadmin
+    name: phpadmin-pod
+    envFrom:
+    - configMapRef:
+        name: phpadmin-config
+    - secretRef:
+        name: phpadmin-secret        
+  dnsPolicy: ClusterFirst
+  restartPolicy: Always

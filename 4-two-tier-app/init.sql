@@ -1,0 +1,3 @@
+CREATE DATABASE IF NOT EXISTS sql_login;
+    USE sql_login;
+    CREATE TABLE users (id INT NOT NULL AUTO_INCREMENT, firstname VARCHAR(256), lastname VARCHAR(256),email VARCHAR(256),password VARCHAR(256),PRIMARY KEY (id));
