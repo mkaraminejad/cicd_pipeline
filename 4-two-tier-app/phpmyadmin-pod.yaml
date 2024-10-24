@@ -11,7 +11,5 @@ spec:
     envFrom:
     - configMapRef:
         name: phpadmin-config
-    - secretRef:
-        name: phpadmin-secret        
   dnsPolicy: ClusterFirst
   restartPolicy: Always
