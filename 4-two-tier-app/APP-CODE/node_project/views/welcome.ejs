@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+     <link rel="stylesheet" href="index.css">
+
+    <title>Be DevOps</title>
+</head>
+
+<body>
+    <header>
+        <div class="logo">
+            <p>Be DevOps</p>
+        </div>
+        <nav>
+            <ul>
+               <li><a href="/">Home</a></li>
+               <li><a href="about">About</a></li>
+               <li><a href="#">Services</a></li>
+               <li><a href="#">Profilio</a></li>
+               <li><a href="#">Contact</a></li>
+            </ul>
+        </nav>
+        <% if(msg1){ %>
+            <button><a href="/logout">Logout</a></button>
+          <% } else{ %>  
+            <button><a href="/login">Logout</a></button>
+         <% } %>
+    </header>    
+    <br>
+    <br>
+    <div></div>
+    <div class="container mt-4">
+        <div class="jumbotron">
+            <h1 style="text-align: center;">Welcome <%= msg1 %></h1>
+        </div>
+
+    </div>
+</body>
+</html>
+

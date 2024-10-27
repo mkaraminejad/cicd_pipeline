@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login system with nodejs and mysql database</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <section class="box">
+        <div class="design">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+        <div class="form">
+            <h2>Sign Up</h2>
+            <form action="/auth/register" method="POST">
+                <input type="email" name="email" class="input-field" placeholder="Email" />
+                <input type="text" name="firstname" class="input-field" placeholder="First Name" />
+                <input type="text" name="lastname" class="input-field" placeholder="Last Name" />
+                <input type="password" name="password" class="input-field" placeholder="Password" />
+                <input type="password" name="passwordconfirm" class="input-field" placeholder="Confirm Password" />
+                <input type="submit" class="btn" value="Register">
+
+            </form>
+            <br>
+            <div></div>
+                <p>Alreday have an account? <a href="Login">Login</a></p>
+                <p>
+                <% if(msg1) {%>
+                    <p style="color: red;"><%= msg1 %></p>
+                <% } %> </p> 
+            </div>
+            <br>
+
+        </div>
+    </section>
+</body>
+</html>

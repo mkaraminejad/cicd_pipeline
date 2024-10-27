@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login system with nodejs and mysql database</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <section class="box">
+        <div class="design">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+
+        <div class="form">
+            <h2>User Login</h2>
+            <form action="/auth/login" method="POST">
+                <input type="email" name="email" class="input-field" placeholder="Username" />
+                <input type="password" name="password" class="input-field" placeholder="Password" />
+                <input type="submit" class="btn" value="LOGIN">
+
+            </form>
+            <br>
+            <div>
+                <p>Don't have an account? <a href="register">Sign-up</a></p>
+            </div>
+            <br>
+            <div>
+                <% if(msg1) {%>
+                    <p style="color: red;"><%= msg1 %></p>
+                <% } %>  
+            </div>
+
+        </div>
+    </section>
+</body>
+</html>
