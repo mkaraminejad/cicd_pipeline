@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: node-app
+  name: node-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: node-app
+  template:
+    metadata:
+      labels:
+        app: node-app
+    spec:
+      imagePullSecrets:
+      - name: registery-credenial            
+      containers:
+      - image: registry.gitlab.com/d6245/app-k8s/app-login:v1 
+        name: node-app
+        envFrom:
+        - configMapRef:
+           name: app-config
+        - secretRef:
+           name: app-secret        

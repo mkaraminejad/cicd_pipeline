@@ -1,0 +1,29 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/rewrite-target: /
+  name: apps-ingress
+spec:
+  rules:
+  - host: loginapp.duckdns.org    
+    http:
+      paths:
+      - backend:
+          service: 
+            name: app-svc
+            port: 
+              number: 5000
+        path: /
+        pathType: Prefix
+  - host: dbmanage.duckdns.org
+    http:
+      paths:
+      - backend:
+          service:
+            name: phpmyadmin-svc
+            port:
+              number: 8099
+        path: /
+        pathType: Prefix          

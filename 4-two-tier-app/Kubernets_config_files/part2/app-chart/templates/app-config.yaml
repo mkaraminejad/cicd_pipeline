@@ -1,0 +1,10 @@
+apiVersion: v1
+data:
+  DATABASE: sql_login
+  DATABASE_HOST: mysql-svc.default.svc.cluster.local
+  DATABASE_USER: root
+  DATABASE_PORT: "3306"
+  PORT: "5000"
+kind: ConfigMap
+metadata:
+  name: app-config  

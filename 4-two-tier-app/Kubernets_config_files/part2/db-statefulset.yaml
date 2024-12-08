@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mysql-sts
+spec:
+  serviceName: "mysql-svc"
+  replicas: 1 
+  selector:
+    matchLabels:
+      app: mysql-sts    
+  template:
+    metadata:
+      labels:
+        app: mysql-sts
+    spec:
+      terminationGracePeriodSeconds: 10
+      containers:
+      - name: mysql-sts
+        image: mysql:5.7
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: db-secret
+              key: MYSQL_ROOT_PASSWORD  
+        ports:
+        - containerPort: 3306
+          name: mysql
+        volumeMounts:
+        - name: mysql-pv-claim
+          mountPath: /var/lib/mysql
+        - name: mysql-initdb
+          mountPath: /docker-entrypoint-initdb.d            
+      volumes:
+      - name: mysql-initdb
+        configMap:
+            name: mysql-initdb-config      
+  volumeClaimTemplates:
+  - metadata:
+      name: mysql-pv-claim
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 1Gi
