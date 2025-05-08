@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: app-weather
+  name: app-weather
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: app-weather
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: app-weather
+    spec:
+      containers:
+      - image: registry.gitlab.com/karaminejad/infra/weather-app:67eea75
+        name: weather-app

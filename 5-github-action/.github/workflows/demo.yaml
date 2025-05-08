@@ -1,0 +1,63 @@
+name: demo-workflow
+'on': push
+jobs:
+    build:
+      name: My k8s job
+      runs-on: ubuntu-latest
+      outputs:
+        image_tag: ${{ steps.get_tag.outputs.image_tag }}
+      steps:
+        - name: Checkout Repository
+          uses: actions/checkout@v4
+
+        - name: Log in gitlab image registry
+          run: |
+            docker login -u ${{ secrets.GITLAB_USERNAME }} -p ${{ secrets.GITLAB_TOKEN }} ${{ secrets.GITLAB_URL }}
+
+        - name: Build and push image
+          id: get_tag
+          run: |
+            IMAGE_TAG=$(git rev-parse --short HEAD)
+            IMAGE_NAME=registry.gitlab.com/karaminejad/infra/weather-app:$IMAGE_TAG     
+            docker build -t $IMAGE_NAME .
+            docker push $IMAGE_NAME
+            echo "IMAGE_TAG=$IMAGE_TAG" >> $GITHUB_ENV
+            echo "IMAGE_NAME=$IMAGE_NAME" >> $GITHUB_ENV
+            echo "image_tag=$IMAGE_TAG" >> $GITHUB_OUTPUT
+
+    deploy:
+      name: deploy
+      needs: build
+      runs-on: ubuntu-latest
+      steps:
+        - name: Checkout Repository
+          uses: actions/checkout@v4
+          
+        - name: Update deployment yaml
+          run: |
+           sed -i "s|image: .*|image: registry.gitlab.com/karaminejad/infra/weather-app:${{ needs.build.outputs.image_tag }}|g" app-k8s/deployment.yaml
+           echo ${{ needs.build.outputs.image_tag }} 
+           
+        - name: Install kubectl
+          uses: azure/setup-kubectl@v3  
+        - name: kubeconfig Config      
+          run: |
+            mkdir ${HOME}/.kube
+            echo ${{ secrets.KUBECONFIG_K8S }} | base64 -d > ${HOME}/.kube/config
+            cat ${HOME}/.kube/config
+        - name: Use Context
+          run: kubectl config use-context cicd-sa-context
+        - name: Deploy to K8s
+          run: |
+            kubectl apply -f app-k8s/deployment.yaml
+            kubectl apply -f app-k8s/service.yaml
+            kubectl get deployment
+            kubectl get pods
+          
+      
+          
+            
+            
+          
+            
+            

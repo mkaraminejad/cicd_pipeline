@@ -1,0 +1,26 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Weather Checker</title>
+    <style>
+      body { font-family: sans-serif; text-align: center; margin-top: 50px; }
+      input, button { padding: 8px; font-size: 16px; }
+    </style>
+  </head>
+  <body>
+    <h1>🌤️ Simple Weather App</h1>
+    <form method="POST">
+      <input type="text" name="city" placeholder="Enter city name" required />
+      <button type="submit">Check Weather</button>
+    </form>
+
+    {% if weather.city %}
+      <h2>{{ weather.city }}</h2>
+      <p>{{ weather.temperature }}°C | {{ weather.description }}</p>
+      <img src="https://openweathermap.org/themes/openweathermap/assets/vendor/owm/img/widgets/{{ weather.icon }}.png">
+    {% elif weather.error %}
+      <p style="color: red;">{{ weather.error }}</p>
+    {% endif %}
+  </body>
+</html>
+
